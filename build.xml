@@ -1,57 +1,27 @@
-<?xml version="1.0"?>
- <project name="JMines" basedir="." default="build">
-  <property name="build.classes" value="bin" />
-  <property name="build.lib" value="lib" />
-  <property name="java.dir" value="." />
-  <property name="name" value="JMines" />
-  
- 
-  <path id="classpath">
-      <pathelement location="." />
-   </path>
- 
-  <!-- Anwendung bauen  -->
-  <target name="build" depends="clean" description="Baut die komplette Anwendung">
-    <!-- Verzeichis anlegen -->
-    <mkdir dir="${build.classes}"/>
- 
-    <!-- Quelltext kompilieren -->
-    <javac srcdir="${java.dir}"
-           destdir="${build.classes}"
-           debug="false"
-           deprecation="true"
-           optimize="true">
-    	<exclude name="**/test/**"/>
-      <classpath refid="classpath" />
-    </javac>
- 
-    <!-- Kopiert notwendige Dateien -->
-    <copy todir="${build.classes}">
-      <fileset dir="${java.dir}">
-        <include name="**/*.properties" />
-        <include name="**/*.gif" />
-      </fileset>
-    </copy>
- 
-    <!-- Baut die JAR-Datei -->
-    <jar jarfile="${name}.jar"  >
-      <fileset dir="${build.classes}"/>
-    	 <manifest>
-    	      <attribute name="Main-Class"
-    	            value="com.steffenschroeder.jmines.gui.GuiGame"/>
-    	    </manifest>
-    </jar>
-  </target>
- 
-  <!-- Aufräumen  -->
-  <target name="clean" description="Räumt die temporär angelegten Dateien weg">
-    <!-- Löscht Dateien -->
-    <delete dir="${build.dir}" />
-    <delete dir="${dist.base}" />
-    <delete dir="${defaultdist.dir}" />
-  	<delete file="${name}.jar"/>
-    <delete> 
-      <fileset dir="." includes="**/*~" defaultexcludes="no"/>
-    </delete>
-  </target>
+<project default="jar">
+
+    
+	 <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes" excludes="**/test/**"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/jmines.jar" basedir="build/classes">
+        	<fileset dir="src" includes="img/**" /> 
+            <manifest>
+                <attribute name="Main-Class" value="com.steffenschroeder.jmines.gui.GuiGame"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java jar="build/jar/jmines.jar" fork="true"/>
+    </target>
+
 </project>
