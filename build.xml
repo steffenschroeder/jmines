@@ -1,0 +1,26 @@
+<project default="jar">
+
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes" excludes="**/test/**"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/jmines.jar" basedir="build/classes">
+        	<fileset dir="src" includes="img/**" /> 
+            <manifest>
+                <attribute name="Main-Class" value="com.steffenschroeder.jmines.gui.GuiGame"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java jar="build/jar/jmines.jar" fork="true"/>
+    </target>
+
+</project>
