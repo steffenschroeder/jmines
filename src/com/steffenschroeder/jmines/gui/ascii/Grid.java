@@ -1,4 +1,4 @@
-package com.steffenschroeder.jmines.gui;
+package com.steffenschroeder.jmines.gui.ascii;
 /*
     This file is part of JMines.
 
@@ -17,6 +17,7 @@ package com.steffenschroeder.jmines.gui;
  */
 
 import java.util.Random;
+
 
 /**
  * Minesweeper backend
