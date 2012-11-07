@@ -30,7 +30,7 @@ import com.steffenschroeder.jmines.MineGame;
 /**
  * Minesweeper Gui Frontend
  * 
- * @author Juliana Peña
+ * @author Juliana Pena
  * 
  */
 public class GuiGame implements GamestateObserver {
