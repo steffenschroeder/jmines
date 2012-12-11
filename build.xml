@@ -3,11 +3,12 @@
     
 	 <target name="clean">
         <delete dir="build"/>
+	 	<delete dir="bin"/>
     </target>
 
     <target name="compile">
         <mkdir dir="build/classes"/>
-        <javac srcdir="src" destdir="build/classes" excludes="**/test/**"/>
+        <javac srcdir="src" includeantruntime="false" destdir="build/classes" excludes="**/test/**"/>
     </target>
 
     <target name="jar" depends="compile">
