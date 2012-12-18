@@ -18,6 +18,10 @@ package com.steffenschroeder.jmines.gui.ascii;
 
 import java.util.Random;
 
+import com.steffenschroeder.jmines.MineBoard;
+import com.steffenschroeder.jmines.MineBoardBuilder;
+import com.steffenschroeder.jmines.MineGame;
+
 
 /**
  * Minesweeper backend
@@ -30,6 +34,8 @@ class Grid implements Consts
 	 * 2D array of Squares to represent grid
 	 */
 	private Square[][] array;
+	private MineGame game;
+	private MineBoard board;
 	
 	/**
 	 * width of grid
@@ -41,6 +47,7 @@ class Grid implements Consts
 	 */
 	private final int height;
 	
+
 	/**
 	 * number of mines in grid
 	 */
@@ -74,6 +81,8 @@ class Grid implements Consts
 		
 		//create the array that represents the grid
 		this.array  = new Square[height][width];
+		board = (new MineBoardBuilder()).createCustomBoard(height, width, mines).getBoard();
+		this.game   = new MineGame(board);
 		
 		//fill the grid with mines and numbers
 		this.fill();
@@ -103,36 +112,36 @@ class Grid implements Consts
 		Random gen = new Random();
 		
 		//initialize the whole array
-		for (int row = 0; row < this.height; row++)
+		for (int row = 0; row < getHeight(); row++)
 		{
-			for (int col = 0; col < this.width; col++)
+			for (int col = 0; col < getWidth(); col++)
 			{
 				this.array[row][col] = new Square();
 			}
 		}
 		
-		for (int i = 0; i < this.mines; )
+		for (int i = 0; i < getMines(); )
 		{
 			//fill grid with mines
-			int row = gen.nextInt(this.height - 1);
-			int col = gen.nextInt(this.width - 1);
+			int row = gen.nextInt(getHeight() - 1);
+			int col = gen.nextInt(getWidth() - 1);
 			
 			if (DEBUG)
 				System.out.println("Filling " + row + "," + col);
 			
-			if (this.array[row][col].getMark() != MINE)
+			if (getMark(row, col) != MINE)
 			{
-				this.array[row][col].fill(MINE);
+				getSqure(row, col).fill(MINE);
 				i++;
 			}
 		}
 		
-		for (int i = 0; i < this.height; i++)
+		for (int i = 0; i < getHeight(); i++)
 		{
 			//fill grid in squares that are not mines
-			for (int j = 0; j < this.width; j++)
+			for (int j = 0; j < getWidth(); j++)
 			{
-				if (this.array[i][j].getMark() != MINE)
+				if (getMark(i, j) != MINE)
 				{
 					int around;
 					try 
@@ -151,31 +160,31 @@ class Grid implements Consts
 					switch (around)
 					{
 					case 1:
-						this.array[i][j].fill(ONE);
+						getSqure(i, j).fill(ONE);
 						break;
 					case 2:
-						this.array[i][j].fill(TWO);
+						getSqure(i, j).fill(TWO);
 						break;
 					case 3:
-						this.array[i][j].fill(THREE);
+						getSqure(i, j).fill(THREE);
 						break;
 					case 4:
-						this.array[i][j].fill(FOUR);
+						getSqure(i, j).fill(FOUR);
 						break;
 					case 5:
-						this.array[i][j].fill(FIVE);
+						getSqure(i, j).fill(FIVE);
 						break;
 					case 6:
-						this.array[i][j].fill(SIX);
+						getSqure(i, j).fill(SIX);
 						break;
 					case 7:
-						this.array[i][j].fill(SEVEN);
+						getSqure(i, j).fill(SEVEN);
 						break;
 					case 8:
-						this.array[i][j].fill(EIGHT);
+						getSqure(i, j).fill(EIGHT);
 						break;
 					default:
-						this.array[i][j].fill(BLANK);
+						getSqure(i, j).fill(BLANK);
 						break;
 					}
 				}
@@ -188,6 +197,22 @@ class Grid implements Consts
 			System.out.println(this);
 		}
 	}
+
+	private int getHeight() {
+		return this.height;
+	}
+
+	private int getMines() {
+		return this.mines;
+	}
+
+	private int getWidth() {
+		return this.width;
+	}
+
+	private Square getSqure(int i, int j) {
+		return this.array[i][j];
+	}
 	
 	/**
 	 * Checks that row and col are within the valid range of this.array[row][col]
@@ -197,23 +222,13 @@ class Grid implements Consts
 	 */
 	private void checkRange(int row, int col) throws SquareDoesNotExist
 	{
-		if (row >= this.height || row < 0)
+		if (row >= getHeight() || row < 0)
 			throw new SquareDoesNotExist("Row out of range");
 		
-		if (col >= this.width || col < 0)
+		if (col >= getWidth() || col < 0)
 			throw new SquareDoesNotExist("Column out of range");
 	}
 	
-	/**
-	 * Returns the size of the grid
-	 * To use: getSize()[0] is width and getSize()[1] is height
-	 * 
-	 * @return {width, height}
-	 */
-	public int[] getSize()
-	{
-		return new int[] {this.width, this.height};
-	}
 	
 	/**
 	 * Detects how many mines are around the square in array[row][col]
@@ -238,120 +253,9 @@ class Grid implements Consts
 				around++;
 		}
 		
+		//return board.getField(row, col).getNumerOfMinesAround();
 		return around;
-		
-		
-		//below is the old version of the method, before the return NONE was implemented in getAdjacentMark()
-		//I keep this for referencing purpose
-		
-		/*
-		//if on a wall
-		if (row == 0) //left wall
-		{
-			//if on corner
-			if (col == 0) //top-left corner
-			{
-				//test BOT, BOTRIGHT, RIGHT
-			}
-			else if (col == this.width - 1) //bottom-left corner
-			{
-				//test TOP, TOPRIGHT, RIGHT
-			}
-			else //on wall w/o corner
-			{
-				//test TOP, TOPRIGHT, RIGHT, BOTRIGHT, BOT
-			}
-		}
-		else if (row == this.height - 1) //right wall
-		{
-			//if on corner
-			if (col == 0) //top-right corner
-			{
-				//test BOT, BOTLEFT, LEFT
-				if (this.getAdjacentMark(row, col, BOT) == MINE)
-					around++;
-				if (this.getAdjacentMark(row, col, BOTLEFT) == MINE)
-					around++;
-				if (this.getAdjacentMark(row, col, LEFT) == MINE)
-					around++;
-			}
-			else if (col == this.width - 1) //bottom-right corner
-			{
-				//test TOP, TOPLEFT, LEFT
-				if (this.getAdjacentMark(row, col, TOPLEFT) == MINE)
-					around++;
-				if (this.getAdjacentMark(row, col, TOP) == MINE)
-					around++;
-				if (this.getAdjacentMark(row, col, LEFT) == MINE)
-					around++;
-			}
-			else //on wall w/o corner
-			{
-				//test TOP, TOPLEFT, LEFT, BOTLEFT, BOT
-				if (this.getAdjacentMark(row, col, TOPLEFT) == MINE)
-					around++;
-				if (this.getAdjacentMark(row, col, TOP) == MINE)
-					around++;
-				if (this.getAdjacentMark(row, col, LEFT) == MINE)
-					around++;
-				if (this.getAdjacentMark(row, col, BOT) == MINE)
-					around++;
-				if (this.getAdjacentMark(row, col, BOTLEFT) == MINE)
-					around++;
-			}
-		}
-		else if (col == 0) //top wall
-		{
-			//test RIGHT, BOTRIGHT, BOT, BOTLEFT, LEFT
-			if (this.getAdjacentMark(row, col, RIGHT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, BOTRIGHT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, BOT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, BOTLEFT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, LEFT) == MINE)
-				around++;
-		}
-		else if (col == this.height - 1) //bottom wall
-		{
-			//test RIGHT, TOPRIGHT, TOP, TOPLEFT, LEFT
-			if (this.getAdjacentMark(row, col, TOPLEFT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, TOP) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, TOPRIGHT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, RIGHT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, LEFT) == MINE)
-				around++;
-		}
-		else //inside grid
-		{
-			//test TOP, TOPRIGHT, RIGHT, BOTRIGHT, BOT, BOTLEFT, LEFT, TOPLEFT
-			if (this.getAdjacentMark(row, col, TOPLEFT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, TOP) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, TOPRIGHT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, RIGHT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, BOTRIGHT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, BOT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, BOTLEFT) == MINE)
-				around++;
-			if (this.getAdjacentMark(row, col, LEFT) == MINE)
-				around++;
-		}
-		
-		
-		return around;
-		*/
+	
 	}
 	
 	/**
@@ -366,112 +270,7 @@ class Grid implements Consts
 	private char getAdjacentMark(int row, int col, int dir) throws DirDoesNotExist, SquareDoesNotExist
 	{
 		return this.getAdjacentSquare(row, col, dir).getMark();
-		
-		
-		//old version, replaced when getAdjacentSquare was added
-		/*this.checkRange(row, col);
-		
-		switch (dir)
-		{
-			case TOPLEFT:
-				try
-				{
-					this.checkRange(row-1, col-1);
-					return this.array[row-1][col-1].getMark();
-				}
-				catch (SquareDoesNotExist e)	
-				{
-					//if on topleft corner
-					return NONE;
-				}
-					
-			case TOP:
-				try
-				{
-					this.checkRange(row-1, col);
-					return this.array[row-1][col].getMark();
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on top wall
-					return NONE;
-				}
-					
-			case TOPRIGHT:
-				try
-				{
-					this.checkRange(row-1, col+1);
-					return this.array[row-1][col+1].getMark();
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on topright corner
-					return NONE;
-				}
-				
-			case RIGHT:
-				try
-				{
-					this.checkRange(row, col+1);
-					return this.array[row][col+1].getMark();
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on right wall
-					return NONE;
-				}
-				
-			case BOTRIGHT:
-				try
-				{
-					this.checkRange(row+1, col+1);
-					return this.array[row+1][col+1].getMark();
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on botright corner
-					return NONE;
-				}
-				
-			case BOT:
-				try
-				{
-					this.checkRange(row+1, col);
-					return this.array[row+1][col].getMark();
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on bottom wall
-					return NONE;
-				}
-				
-			case BOTLEFT:
-				try
-				{
-					this.checkRange(row+1, col-1);
-					return this.array[row+1][col-1].getMark();
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on botleft corner
-					return NONE;
-				}
-				
-			case LEFT:
-				try
-				{
-					this.checkRange(row, col-1);
-					return this.array[row][col-1].getMark();
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on left wall
-					return NONE;
-				}
-				
-			default:
-				throw new DirDoesNotExist("Direction " + dir + " does not exist");
-		}*/
+	
 	}
 
 	/**
@@ -489,125 +288,50 @@ class Grid implements Consts
 	{
 		this.checkRange(row, col);
 		
-		switch (dir)
-		{
+		int offsetlr = getLeftTofset(dir);
+		int offsettb = getTopOffset(dir);
+
+			
+		this.checkRange(row + offsettb, col + offsetlr);
+		return this.getSqure(row + offsettb,col + offsetlr);
+
+	}
+
+	private int getTopOffset(int dir) {
+		int offsettb = 0;
+		switch (dir) {
 			case TOPLEFT:
-				try
-				{
-					this.checkRange(row-1, col-1);
-					return this.array[row-1][col-1];
-				}
-				catch (SquareDoesNotExist e)	
-				{
-					//if on topleft corner
-					return new Square();
-				}
-					
 			case TOP:
-				try
-				{
-					this.checkRange(row-1, col);
-					return this.array[row-1][col];
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on top wall
-					return new Square();
-				}
-					
-			case TOPRIGHT:
-				try
-				{
-					this.checkRange(row-1, col+1);
-					return this.array[row-1][col+1];
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on topright corner
-					return new Square();
-				}
-				
-			case RIGHT:
-				try
-				{
-					this.checkRange(row, col+1);
-					return this.array[row][col+1];
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on right wall
-					return new Square();
-				}
-				
-			case BOTRIGHT:
-				try
-				{
-					this.checkRange(row+1, col+1);
-					return this.array[row+1][col+1];
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on botright corner
-					return new Square();
-				}
-				
-			case BOT:
-				try
-				{
-					this.checkRange(row+1, col);
-					return this.array[row+1][col];
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on bottom wall
-					return new Square();
-				}
-				
+			case TOPRIGHT: offsettb = -1;	
+				break;
 			case BOTLEFT:
-				try
-				{
-					this.checkRange(row+1, col-1);
-					return this.array[row+1][col-1];
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on botleft corner
-					return new Square();
-				}
-				
-			case LEFT:
-				try
-				{
-					this.checkRange(row, col-1);
-					return this.array[row][col-1];
-				}
-				catch (SquareDoesNotExist e)
-				{
-					//if on left wall
-					return new Square();
-				}
-				
+			case BOT:
+			case BOTRIGHT: offsettb = +1;	
+				break;
 			default:
-				throw new DirDoesNotExist("Direction " + dir + " does not exist");
-		}
-				
-		
-		
+				break;
+			}
+		return offsettb;
+	}
+
+	private int getLeftTofset(int dir) {
+		int offsetlr = 0;
+		switch (dir) {
+			case TOPLEFT:
+			case LEFT:
+			case BOTLEFT: offsetlr = -1;	
+				break;
+			case TOPRIGHT:
+			case RIGHT:
+			case BOTRIGHT: offsetlr = +1;	
+				break;
+			default:
+				break;
+			}
+		return offsetlr;
 	}
 	
-	/**
-	 * Returns the mark at this.array[row][col]
-	 * @param row
-	 * @param col
-	 * @return
-	 * @throws SquareDoesNotExist
-	 */
-	public char getMarkAt(int row, int col) throws SquareDoesNotExist
-	{
-		this.checkRange(row, col);
-		
-		return this.array[row][col].getMark();
-	}
+
 	
 	/**
 	 * Reveales the Square at coords row,col 
@@ -642,96 +366,20 @@ class Grid implements Consts
 		
 		
 		
-		if (this.array[row][col].isRevealed())
-			return;
-		
-		this.array[row][col].reveal();
+		reveal2(row, col);
 		
 		
-		if (this.array[row][col].getMark() == BLANK)
+		if (getMark(row, col) == BLANK)
 		{
-			//reveal all adjacent if square is blank
 			
-			/*Square next;
-			for (int dir = 0; dir <= DIRMAX; dir++)
-			{
-				try
+			for(int direction = TOPLEFT;direction<=LEFT;direction++){
+				try //top
 				{
-					next = this.getAdjacentSquare(row, col, dir);
-					next.reveal();
-				}
-				catch (SquareDoesNotExist e) {return;} 
-				catch (DirDoesNotExist e) {return;}
-				catch (SquareAlreadyRevealed e) {return;}
-			}*/
-			
-			/*
-			for (int r = -1; r > 1; r++)
-			{
-				for (int c = -1; c > 1; c++)
-				{
-					if (r != 0 && c != 0)
-					{
-						try //topleft
-						{
-							this.reveal(row+r, col+c);
-						} catch (SquareDoesNotExist e) {continue;}
-						  catch (SquareAlreadyRevealed e) {continue;}
-					}
-				}
-			}*/
-			
-			
-			try //topleft
-			{
-				this.reveal(row-1, col-1);
-			} catch (SquareDoesNotExist e) {}
-			  catch (SquareAlreadyRevealed e) {}
-			
-			try //top
-			{
-				this.reveal(row-1, col);
-			} catch (SquareDoesNotExist e) {}
-			  catch (SquareAlreadyRevealed e) {}
-			
-			try //topright
-			{
-				this.reveal(row-1, col+1);
-			} catch (SquareDoesNotExist e) {}
-			  catch (SquareAlreadyRevealed e) {}
-			
-			try //right
-			{
-				this.reveal(row, col+1);
-			} catch (SquareDoesNotExist e) {}
-			  catch (SquareAlreadyRevealed e) {}
-			
-			try //botright
-			{
-				this.reveal(row+1, col+1);
-			} catch (SquareDoesNotExist e) {}
-			  catch (SquareAlreadyRevealed e) {}
-			
-			try	//bot
-			{
-				this.reveal(row+1, col);
-			} catch (SquareDoesNotExist e) {}
-			  catch (SquareAlreadyRevealed e) {}
-			
-			try //botleft
-			{
-				this.reveal(row+1, col-1);
-			} catch (SquareDoesNotExist e) {}
-			  catch (SquareAlreadyRevealed e) {}
-			
-			try //left
-			{
-				this.reveal(row,   col-1);
-			} catch (SquareDoesNotExist e) {}
-			  catch (SquareAlreadyRevealed e) {}
-			
-			  /*catch (SquareDoesNotExist e) {return;}
-			  catch (SquareAlreadyRevealed e) {return;}*/
+					this.reveal(row+getTopOffset(direction), col+getLeftTofset(direction));
+				} catch (SquareDoesNotExist e) {}
+				  catch (SquareAlreadyRevealed e) {}
+				
+			}
 		}
 		
 		
@@ -740,6 +388,10 @@ class Grid implements Consts
 			System.out.println(this);
 		}
 		
+	}
+
+	private char reveal2(int row, int col) {
+		return getSqure(row, col).reveal();
 	}
 	
 	/**
@@ -756,7 +408,7 @@ class Grid implements Consts
 	public boolean isHidden(int row, int col) throws SquareDoesNotExist
 	{
 		this.checkRange(row, col);
-		return this.array[row][col].isHidden();
+		return getSqure(row, col).isHidden();
 	}
 	
 	/**
@@ -773,7 +425,7 @@ class Grid implements Consts
 	public boolean isRevealed(int row, int col) throws SquareDoesNotExist
 	{
 		this.checkRange(row, col);
-		return this.array[row][col].isRevealed();
+		return !getSqure(row, col).isHidden();
 	}
 	
 	/**
@@ -796,7 +448,7 @@ class Grid implements Consts
 			throw new SquareAlreadyRevealed("Cannot be flagged, square is revealed");
 		}
 		
-		this.array[row][col].toggleFlag();
+		getSqure(row, col).toggleFlag();
 	}
 	
 	public boolean hasFlag(int row, int col)
@@ -810,73 +462,45 @@ class Grid implements Consts
 			return false;
 		}
 		
-		return this.array[row][col].hasFlag();
+		return getSqure(row, col).hasFlag();
 	}
 	
 	
-	public int flagsAround(int row, int col)
-	{
-		//asserts that row and col are valid
-		try 
-		{
-			this.checkRange(row, col);
-		} 
-		catch (SquareDoesNotExist e1) {
-			return 0;
-		}
-		
-		
-		int around = 0;
-		
-		for (int dir = 0; dir <= DIRMAX; dir++)
-		{
-			try
-			{
-				if (this.getAdjacentSquare(row, col, dir).hasFlag())
-					around++;
-			} 
-			catch (SquareDoesNotExist e) 
-			{} 
-			catch (DirDoesNotExist e) 
-			{}
-		}
-		
-		return around;
-	}
+	
 	
 	/**
 	 * Returns a string representation of the grid, with hidden squares in black
 	 * 
 	 * Example:
 	 * 
-    	A B C D E F
-  	  + - - - - - - +
+		A B C D E F
+	  + - - - - - - +
 	1 | █ █ █ █ █ █ | 1
 	2 | █ █ █ █ █ █ | 2
 	3 | █ █ █ █ █ █ | 3
 	4 | █ █ █ █ █ █ | 4
 	5 | █ █ █ █ █ █ | 5
-  	  + - - - - - - +
+	  + - - - - - - +
 		A B C D E F
-
-    	A B C D E F
-  	  + - - - - - - +
+	
+		A B C D E F
+	  + - - - - - - +
 	1 | █ 1 █ █ █ █ | 1
 	2 | █ █ █ █ █ █ | 2
 	3 | █ █ █ █ █ █ | 3
 	4 | █ █ █ █ █ █ | 4
 	5 | █ █ █ █ █ █ | 5
-  	  + - - - - - - +
+	  + - - - - - - +
 		A B C D E F
-
-        A B C D E F
-  	  + - - - - - - +
+	
+	    A B C D E F
+	  + - - - - - - +
 	1 | █ 1 █ █ 1   | 1
 	2 | █ █ █ 2     | 2
 	3 | █ █ █ █ 1   | 3
 	4 | █ █ █ █ █ 2 | 4
 	5 | █ █ █ █ █ █ | 5
-  	  + - - - - - - +
+	  + - - - - - - +
 		A B C D E F
 	* 
 	* etc....
@@ -888,90 +512,7 @@ class Grid implements Consts
 	@Override
 	public String toString()
 	{
-		String s = new String();
-		
-		//add letters on top
-		s += "     "; //5 spaces for padding
-		char letter = 'A';
-		for (int i = 0; i < this.width; i++)
-		{
-			s += letter;
-			s += ' '; //space for padding
-			letter++;
-		}
-		s += '\n';
-		
-		//add top border
-		s += "   + ";
-		for (int i = 0; i < this.width; i++)
-		{
-			s += "- ";
-		}
-		s += '+';
-		s += '\n';
-		
-		for (int i = 0; i < this.height; i++)
-		{
-			//add number at start of line
-			if ((i + 1) / 10  == 0) //if only one digit, pad with one space
-			{
-				s += ' ';
-				s += (i + 1);
-			}
-			else
-			{
-				s += (i + 1);
-			}
-			s += " | ";
-			
-			
-			for (int j = 0; j < this.width; j++)
-			{
-				if (this.array[i][j].isRevealed())
-				{
-					s += this.array[i][j].getMark();
-				}
-				else if (this.array[i][j].hasFlag())
-				{
-					s += FLAG;
-				}
-				else
-				{
-					s += HIDDEN;
-				}
-				s += ' ';
-			}
-			s += "| ";
-			
-			//add number at end of line
-			s += (i + 1);
-			
-			s += '\n';
-		}
-		
-		//add bottom border
-		s += "   + ";
-		for (int i = 0; i < this.width; i++)
-		{
-			s += "- ";
-		}
-		s += '+';
-		s += '\n';
-		
-		//add letters on bottom
-		s += "     "; //5 spaces for padding
-		letter = 'A';
-		for (int i = 0; i < this.width; i++)
-		{
-			s += letter;
-			s += ' '; //space for padding
-			letter++;
-		}
-		s += '\n';
-		
-		
-		
-		return s;
+		return printGrid(false);
 	}
 	
 	/**
@@ -987,8 +528,8 @@ class Grid implements Consts
 		4 | 2 3 * 2 * 2 | 4
 		5 | * * 2   2 *	| 5
 		  + - - - - - - +
-    		A B C D E F
-    		
+			A B C D E F
+			
 	 * 
 	 * @return string of revealed grid
 	 * 
@@ -996,78 +537,109 @@ class Grid implements Consts
 	 */
 	public String solutionToString()
 	{
+		return printGrid(true);
+	}
+
+	private String printGrid(boolean solution){
 		String s = new String();
 		
+		s = topLetters(s);
+		s = topborder(s);
+		
+		try {
+			s = printInnerField(s, solution);
+		} catch (SquareDoesNotExist e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		s = topborder(s);
+		s = topLetters(s);
+		
+		return s;
+	}
+	
+	
+
+	private String topLetters(String s) {
 		//add letters on top
 		s += "     "; //5 spaces for padding
 		char letter = 'A';
-		for (int i = 0; i < this.width; i++)
+		for (int i = 0; i < getWidth(); i++)
 		{
 			s += letter;
 			s += ' '; //space for padding
 			letter++;
 		}
 		s += '\n';
-		
+		return s;
+	}
+
+	private String topborder(String s) {
 		//add top border
 		s += "   + ";
-		for (int i = 0; i < this.width; i++)
+		for (int i = 0; i < getWidth(); i++)
 		{
 			s += "- ";
 		}
 		s += '+';
 		s += '\n';
-		
-		for (int i = 0; i < this.height; i++)
-		{
-			//add number at start of line
-			if ((i + 1) / 10  == 0) //if only one digit, pad with one space
-			{
-				s += ' ';
-				s += (i + 1);
-			}
-			else
-			{
-				s += (i + 1);
-			}
-			s += " | ";
-			
-			for (int j = 0; j < this.width; j++)
-			{
-				s += this.array[i][j].getMark();
-				s += ' ';
-			}
-			
-			s += "| ";
-			//add number at end of line
-			s += (i + 1);
-			
-			s += '\n';
-		}
-		
-		//add bottom border
-		s += "   + ";
-		for (int i = 0; i < this.width; i++)
-		{
-			s += "- ";
-		}
-		s += '+';
-		s += '\n';
-		
-		//add letters on bottom
-		s += "     "; //5 spaces for padding
-		letter = 'A';
-		for (int i = 0; i < this.width; i++)
-		{
-			s += letter;
-			s += ' '; //space for padding
-			letter++;
-		}
-		s += '\n';
-		
-		
-		
 		return s;
+	}
+
+	private String printInnerField(String s, boolean printSolution) throws SquareDoesNotExist {
+		for (int i = 0; i < getHeight(); i++)
+		{
+			s = left(s, i);
+			
+			for (int j = 0; j < getWidth(); j++)
+			{
+				
+				if (isRevealed(i, j) || printSolution)
+				{
+					s += getMark(i, j);
+				}
+				else if (hasFlag(i, j))
+				{
+					s += FLAG;
+				}
+				else
+				{
+					s += HIDDEN;
+				}
+				s += ' ';
+			}
+			s = right(s, i);
+		}
+		return s;
+	}
+
+	private String left(String s, int i) {
+		if ((i + 1) / 10  == 0) //if only one digit, pad with one space
+		{
+			s += ' ';
+			s += (i + 1);
+		}
+		else
+		{
+			s += (i + 1);
+		}
+		s += " | ";
+		return s;
+	}
+
+	private String right(String s, int i) {
+		s += "| ";
+		
+		//add number at end of line
+		s += (i + 1);
+		
+		s += '\n';
+		return s;
+	}
+
+	public char getMark(int i, int j) {
+		return getSqure(i, j).getMark();
 	}
 	
 }

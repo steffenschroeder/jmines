@@ -39,11 +39,6 @@ class Square implements Consts
 		return this.hidden;
 	}
 	
-	public boolean isRevealed()
-	{
-		return !(this.hidden);
-	}
-	
 	public char reveal()
 	{
 		this.hidden = false;

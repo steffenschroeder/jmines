@@ -132,7 +132,7 @@ public class AsciiGame implements Consts
 			{
 				try 
 				{
-					if (this.grid.getMarkAt(i, j) != MINE && this.grid.isHidden(i, j))
+					if (this.grid.getMark(i, j) != MINE && this.grid.isHidden(i, j))
 					{
 						return;
 					}
@@ -210,7 +210,7 @@ public class AsciiGame implements Consts
 				{
 					this.grid.reveal(row, col);
 					chosen = true;
-					if (this.grid.getMarkAt(row, col) == MINE)
+					if (this.grid.getMark(row, col) == MINE)
 					{
 						this.lost = true;
 					}
@@ -281,6 +281,8 @@ public class AsciiGame implements Consts
 		
 		System.out.print("Want to play again? (y/n) ");
 		char choice;
+		
+
 		while (true)
 		{
 			choice = s.nextLine().toLowerCase().charAt(0);
@@ -297,6 +299,7 @@ public class AsciiGame implements Consts
 					break;
 			}
 		}
+		
 	}
 
 	public static void main(String[] args) 
