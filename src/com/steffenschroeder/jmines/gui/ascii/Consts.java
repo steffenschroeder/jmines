@@ -39,8 +39,8 @@ interface Consts
 	public static final char SEVEN = '7';
 	public static final char EIGHT = '8';
 	
-	//character to show if square is hidden
-	public static final char HIDDEN = (char) 0x2588; // utf code of █ in hex
+
+	public static final char HIDDEN = (char) 0x2588;
 	
 	//character to show if square has flag
 	public static final char FLAG = 'F';

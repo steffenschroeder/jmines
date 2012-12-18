@@ -4,6 +4,7 @@
 package com.steffenschroeder.jmines;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  */
 public abstract class Field {
 	
-    private int minesAround = 0;
+	private int minesAround = 0;
     
 	private boolean isOpended = false;
 
@@ -37,6 +38,7 @@ public abstract class Field {
     	countMinesInNeighborhood();
     }
 
+
 	private void countMinesInNeighborhood() {
 		minesAround = 0;
     	for (Field field : this.neighbors) {
@@ -48,7 +50,7 @@ public abstract class Field {
      * the field was opened by the user
      */
     public void open() {
-        isOpended = true;
+    	isOpended = true;
     }
 
 	public boolean isFlagged() {

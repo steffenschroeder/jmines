@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class MineBoard implements Iterable<Field>{
-    private Field[][] mines;
+    protected Field[][] mines;
 
     private MineBoard() {
 
@@ -89,4 +89,5 @@ public class MineBoard implements Iterable<Field>{
 	public Iterator<Field> iterator() {
 		return new TwoDimensionArrayIterator<Field>(mines);
 	}
+	
 }

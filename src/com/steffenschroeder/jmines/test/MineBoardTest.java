@@ -5,8 +5,10 @@ import static junit.framework.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.steffenschroeder.jmines.ACSCIIBoardBuilder;
 import com.steffenschroeder.jmines.Field;
 import com.steffenschroeder.jmines.MineBoard;
+import com.steffenschroeder.jmines.MineBoardBuilder;
 import com.steffenschroeder.jmines.MineField;
 import com.steffenschroeder.jmines.NoMineField;
 
@@ -124,4 +126,13 @@ public class MineBoardTest {
 		}
 		assertEquals(board.getNumberOfMines(), count);
 	}
+	
+	@Test
+	public void StackOverFlow(){
+		MineBoard board = (new MineBoardBuilder()).createCustomBoard(100, 100, 10).getBoard();
+		board.getField(0, 0).open();
+	}
+
+	
+	
 }

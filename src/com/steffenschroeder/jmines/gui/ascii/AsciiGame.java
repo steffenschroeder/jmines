@@ -19,18 +19,25 @@ package com.steffenschroeder.jmines.gui.ascii;
 
 import java.util.Scanner;
 
+import com.steffenschroeder.jmines.ACSCIIBoardBuilder;
+import com.steffenschroeder.jmines.GamestateObserver;
+import com.steffenschroeder.jmines.MineBoard;
+import com.steffenschroeder.jmines.MineBoardBuilder;
+import com.steffenschroeder.jmines.MineGame;
+
 
 /**
  * Minesweeper Ascii Frontent
  * @author Juliana Peña
  *
  */
-public class AsciiGame implements Consts
+public class AsciiGame implements Consts, GamestateObserver
 {
 	private int mines;
 	private int width;
 	private int height;
-	private Grid grid;
+	MineGame game;
+	MineBoard board;
 	
 	/**
 	 * Has current game been lost?
@@ -68,10 +75,13 @@ public class AsciiGame implements Consts
 		this.won  = false;
 		
 		this.chooseSize();
-		try 
-		{
-			this.grid = new Grid(mines, width, height);
-		} 
+/*		try 
+		{*/
+			this.board = (new ACSCIIBoardBuilder().createCustomBoard(height, width, mines)).getBoard();
+			
+			this.game = new MineGame(board);
+	/*	}*/ 
+/*
 		catch (UnableToCreateGrid e) 
 		{
 			System.out.println("Error:");
@@ -79,6 +89,7 @@ public class AsciiGame implements Consts
 			System.out.println("Game will now quit.");
 			System.exit(0);
 		}
+		*/
 	}
 	
 	private void chooseSize()
@@ -124,27 +135,6 @@ public class AsciiGame implements Consts
 		}
 	}
 	
-	private void checkWon()
-	{
-		for (int i = 0; i < this.height; i++)
-		{
-			for (int j = 0; j < this.width; j++)
-			{
-				try 
-				{
-					if (this.grid.getMark(i, j) != MINE && this.grid.isHidden(i, j))
-					{
-						return;
-					}
-				} 
-				catch (SquareDoesNotExist e) 
-				{
-					continue;
-				}
-			}
-		}
-		this.won = true;
-	}
 	
 	private void wonMessage()
 	{
@@ -181,11 +171,11 @@ public class AsciiGame implements Consts
 				row = row - 1;
 				s.nextLine();
 				
-				try
-				{
-					this.grid.toggleFlag(row, col);
+				/*try
+				{*/
+					game.toggleFlag(row, col);
 					chosen = true;
-				}
+				/*}
 				catch (SquareAlreadyRevealed e)
 				{
 					System.out.println("Can't flag, square has been revealed!");
@@ -193,7 +183,7 @@ public class AsciiGame implements Consts
 				catch (SquareDoesNotExist e)
 				{
 					System.out.println("Square coordinates " + row + "," + col + " are incorrect, try again.");
-				}
+				}*/
 				break;
 								
 			case 'r':
@@ -206,15 +196,13 @@ public class AsciiGame implements Consts
 				row = row - 1;
 				s.nextLine();
 				
+				/*
 				try
-				{
-					this.grid.reveal(row, col);
+				{*/
+					this.game.open(row, col);
 					chosen = true;
-					if (this.grid.getMark(row, col) == MINE)
-					{
-						this.lost = true;
-					}
-				}
+				/*}
+/*
 				catch (SquareHasFlag e)
 				{
 					System.out.println("Cannot reveal square, has a flag! Unflag it first.");
@@ -226,7 +214,7 @@ public class AsciiGame implements Consts
 				catch (SquareDoesNotExist e) 
 				{
 					System.out.println("Square coordinates are incorrect, try again.");
-				} 
+				}*/ 
 				break;
 			
 			case 'q':
@@ -256,10 +244,9 @@ public class AsciiGame implements Consts
 				if (this.done)
 					break;
 				
-				System.out.println(this.grid);
+
+				System.out.println(board);
 				this.takeInput();
-				
-				this.checkWon();
 				
 			}
 			
@@ -268,7 +255,8 @@ public class AsciiGame implements Consts
 			else if (this.lost)
 				this.lostMessage();
 			System.out.println("The solution was:");
-			System.out.println(this.grid.solutionToString());
+			//TODO: use solution
+			System.out.println(board);
 			
 			this.askAnotherGame();
 		}
@@ -305,6 +293,22 @@ public class AsciiGame implements Consts
 	public static void main(String[] args) 
 	{
 		new AsciiGame();
+	}
+
+	@Override
+	public void nofifyGameWon() {
+		this.won = true;
+	}
+
+	@Override
+	public void notifyGameLost() {
+		this.lost = true;
+	}
+
+	@Override
+	public void nofifyBoardChanged() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 

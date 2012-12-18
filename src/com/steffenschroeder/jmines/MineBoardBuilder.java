@@ -19,10 +19,14 @@ public class MineBoardBuilder {
 	public MineBoardBuilder createCustomBoard(int rows, int columns, int minesToAdd) {
 
 		validateInput(rows, columns, minesToAdd);
-		boardToCreate = new MineBoard(rows, columns);
+		boardToCreate = instanciate(rows, columns);
 		initilizeBoard();
 		addRandomNumberOfMines(minesToAdd);
 		return this;
+	}
+
+	protected MineBoard instanciate(int rows, int columns) {
+		return new MineBoard(rows, columns);
 	}
 
 	private void validateInput(int rows, int columns, int minesToAdd) {
