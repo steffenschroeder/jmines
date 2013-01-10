@@ -1,28 +1,83 @@
-<project default="jar">
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="JMines">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="/usr/lib/eclipse"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}/dropins/jdt/plugins/org.junit_4.8.2.v4_8_2_v20110321-1705/junit.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/dropins/jdt/plugins/org.hamcrest.core_1.1.0.jar"/>
+    </path>
+    <path id="JMines.classpath">
+        <pathelement location="bin"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    	<delete dir="build"/>
+    	<delete dir="${junit.output.dir}"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="JMines.classpath"/>
+        </javac>
+    </target>
     
-	 <target name="clean">
-        <delete dir="build"/>
-	 	<delete dir="bin"/>
-    </target>
-
-    <target name="compile">
-        <mkdir dir="build/classes"/>
-        <javac srcdir="src" includeantruntime="false" destdir="build/classes" excludes="**/test/**"/>
-    </target>
-
-    <target name="jar" depends="compile">
+    <target name="jar" depends="build">
         <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/jmines.jar" basedir="build/classes">
-        	<fileset dir="src" includes="img/**" /> 
+        <jar destfile="build/jar/jmines.jar" basedir="bin">
+        	<!--<fileset dir="src" includes="img/**" />--> 
             <manifest>
                 <attribute name="Main-Class" value="com.steffenschroeder.jmines.gui.GuiGame"/>
             </manifest>
         </jar>
     </target>
-
     <target name="run" depends="jar">
         <java jar="build/jar/jmines.jar" fork="true"/>
     </target>
-
+	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="com.steffenschroeder.jmines.test">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="com.steffenschroeder.jmines.test.FieldTest" todir="${junit.output.dir}"/>
+            <test name="com.steffenschroeder.jmines.test.MindGameTest" todir="${junit.output.dir}"/>
+            <test name="com.steffenschroeder.jmines.test.MineBoardBuilderTest" todir="${junit.output.dir}"/>
+            <test name="com.steffenschroeder.jmines.test.MineBoardTest" todir="${junit.output.dir}"/>
+            <classpath refid="JMines.classpath"/>
+        </junit>
+    </target>
+    <target name="GuiGame" depends="build-project">
+        <java classname="com.steffenschroeder.jmines.gui.GuiGame" failonerror="true" fork="yes">
+            <classpath refid="JMines.classpath"/>
+        </java>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
 </project>
