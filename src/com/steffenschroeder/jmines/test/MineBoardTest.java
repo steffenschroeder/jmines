@@ -3,6 +3,7 @@ package com.steffenschroeder.jmines.test;
 import static junit.framework.Assert.*;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.steffenschroeder.jmines.ACSCIIBoardBuilder;
@@ -23,7 +24,7 @@ public class MineBoardTest {
 				assertEquals(expected[ii][jj], board.getField(ii, jj)
 						.isOpen());
 			}
-		}
+}
 	}
 
 	@Before
@@ -128,6 +129,7 @@ public class MineBoardTest {
 	}
 	
 	@Test
+	@Ignore
 	public void StackOverFlow(){
 		MineBoard board = (new MineBoardBuilder()).createCustomBoard(100, 100, 10).getBoard();
 		board.getField(0, 0).open();
