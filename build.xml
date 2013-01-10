@@ -11,6 +11,10 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
+	<property name="jarfolder" value="jar" />
+	<property name="jarlocation" value="${jarfolder}/${ant.project.name}.jar"/>
+
+
     <path id="JUnit 4.libraryclasspath">
         <pathelement location="${ECLIPSE_HOME}/dropins/jdt/plugins/org.junit_4.8.2.v4_8_2_v20110321-1705/junit.jar"/>
         <pathelement location="${ECLIPSE_HOME}/dropins/jdt/plugins/org.hamcrest.core_1.1.0.jar"/>
@@ -29,7 +33,7 @@
     </target>
     <target name="clean">
         <delete dir="bin"/>
-    	<delete dir="build"/>
+    	<delete dir="jar"/>
     	<delete dir="${junit.output.dir}"/>
     </target>
     <target depends="clean" name="cleanall"/>
@@ -37,35 +41,37 @@
     <target name="build-subprojects"/>
     <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}" includeantruntime="false">
             <src path="src"/>
             <classpath refid="JMines.classpath"/>
         </javac>
     </target>
     
     <target name="jar" depends="build">
-        <mkdir dir="build/jar"/>
-        <jar destfile="build/jar/jmines.jar" basedir="bin">
-        	<!--<fileset dir="src" includes="img/**" />--> 
+        <mkdir dir="${jarfolder}"/>
+        <jar destfile="${jarlocation}" basedir="bin">
             <manifest>
                 <attribute name="Main-Class" value="com.steffenschroeder.jmines.gui.GuiGame"/>
             </manifest>
         </jar>
     </target>
     <target name="run" depends="jar">
-        <java jar="build/jar/jmines.jar" fork="true"/>
+        <java jar="${jarlocation}" fork="true"/>
     </target>
 	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target name="com.steffenschroeder.jmines.test">
+    <target name="test">
         <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="com.steffenschroeder.jmines.test.FieldTest" todir="${junit.output.dir}"/>
-            <test name="com.steffenschroeder.jmines.test.MindGameTest" todir="${junit.output.dir}"/>
-            <test name="com.steffenschroeder.jmines.test.MineBoardBuilderTest" todir="${junit.output.dir}"/>
-            <test name="com.steffenschroeder.jmines.test.MineBoardTest" todir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr"  failureproperty="junit.failure" >
+        	<batchtest todir="${junit.output.dir}">
+        		<fileset dir="src">
+        			<include name="**/test/**"/>
+				</fileset>
+ 
+        		<formatter type="xml"/>
+        	</batchtest>
             <classpath refid="JMines.classpath"/>
         </junit>
+    	<fail if="junit.failure" message="Unittest(s) failed - check the reports"/>
     </target>
     <target name="GuiGame" depends="build-project">
         <java classname="com.steffenschroeder.jmines.gui.GuiGame" failonerror="true" fork="yes">
