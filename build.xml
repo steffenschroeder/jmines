@@ -16,8 +16,8 @@
 
 
     <path id="JUnit 4.libraryclasspath">
-        <pathelement location="${ECLIPSE_HOME}/dropins/jdt/plugins/org.junit_4.8.2.v4_8_2_v20110321-1705/junit.jar"/>
-        <pathelement location="${ECLIPSE_HOME}/dropins/jdt/plugins/org.hamcrest.core_1.1.0.jar"/>
+        <pathelement location="${basedir}/lib/junit.jar"/>
+        <pathelement location="${basedir}/lib/org.hamcrest.core_1.1.0.jar"/>
     </path>
     <path id="JMines.classpath">
         <pathelement location="bin"/>
@@ -34,6 +34,7 @@
     <target name="clean">
         <delete dir="bin"/>
     	<delete dir="jar"/>
+    	<delete dir="build"/>
     	<delete dir="${junit.output.dir}"/>
     </target>
     <target depends="clean" name="cleanall"/>
@@ -55,11 +56,11 @@
             </manifest>
         </jar>
     </target>
-    <target name="run" depends="jar">
+    <target name="run" depends="jar,test">
         <java jar="${jarlocation}" fork="true"/>
     </target>
 	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target name="test">
+    <target name="test" depends="build-project">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr"  failureproperty="junit.failure" >
         	<batchtest todir="${junit.output.dir}">
