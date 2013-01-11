@@ -22,7 +22,6 @@ import java.util.Scanner;
 import com.steffenschroeder.jmines.ACSCIIBoardBuilder;
 import com.steffenschroeder.jmines.GamestateObserver;
 import com.steffenschroeder.jmines.MineBoard;
-import com.steffenschroeder.jmines.MineBoardBuilder;
 import com.steffenschroeder.jmines.MineGame;
 
 

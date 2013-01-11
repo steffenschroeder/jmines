@@ -18,10 +18,6 @@ package com.steffenschroeder.jmines.gui.ascii;
 
 import java.util.Random;
 
-import com.steffenschroeder.jmines.MineBoard;
-import com.steffenschroeder.jmines.MineBoardBuilder;
-import com.steffenschroeder.jmines.MineGame;
-
 
 /**
  * Minesweeper backend
@@ -34,8 +30,6 @@ class Grid implements Consts
 	 * 2D array of Squares to represent grid
 	 */
 	private Square[][] array;
-	private MineGame game;
-	private MineBoard board;
 	
 	/**
 	 * width of grid
@@ -81,8 +75,6 @@ class Grid implements Consts
 		
 		//create the array that represents the grid
 		this.array  = new Square[height][width];
-		board = (new MineBoardBuilder()).createCustomBoard(height, width, mines).getBoard();
-		this.game   = new MineGame(board);
 		
 		//fill the grid with mines and numbers
 		this.fill();

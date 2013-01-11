@@ -1,12 +1,11 @@
 package com.steffenschroeder.jmines.test;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.steffenschroeder.jmines.ACSCIIBoardBuilder;
 import com.steffenschroeder.jmines.Field;
 import com.steffenschroeder.jmines.MineBoard;
 import com.steffenschroeder.jmines.MineBoardBuilder;
