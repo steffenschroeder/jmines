@@ -14,10 +14,7 @@ public class NoMineField extends Field {
         if (noMinesAround()) {
             for (Field neighbor : neighbors) {
                 if (!neighbor.isOpen() && !neighbor.isFlagged()) {
-                	System.out.println("Level: " + ++level);
-                	System.out.println("Neighbors:" + neighbors.size());
-                	neighbor.open();
-                	System.out.println("Level: " + --level);
+      	               	neighbor.open();
                 }
             }
         }
