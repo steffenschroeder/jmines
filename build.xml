@@ -39,7 +39,7 @@
     <target depends="clean" name="cleanall"/>
     <target depends="build-subprojects,build-project" name="build"/>
     <target name="build-subprojects"/>
-    <target depends="init" name="build-project">
+    <target depends="init" name="build-project" description="compile all files">
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}" includeantruntime="false" encoding="UTF-8">
             <src path="src"/>
@@ -55,11 +55,11 @@
             </manifest>
         </jar>
     </target>
-    <target name="run" depends="jar,test">
+    <target name="run" depends="jar,test" description="run the jar with standard settings">
         <java jar="${jarlocation}" fork="true"/>
     </target>
 	<target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
-    <target name="test" depends="build-project">
+    <target name="test" depends="build-project" description="Run all Unit tests">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr"  failureproperty="junit.failure" >
         	<batchtest todir="${junit.output.dir}">
@@ -73,7 +73,7 @@
         </junit>
     	<fail if="junit.failure" message="Unittest(s) failed - check the reports"/>
     </target>
-    <target name="GuiGame" depends="build-project">
+    <target name="GuiGame" depends="build-project" description="run the gui game">
         <java classname="com.steffenschroeder.jmines.gui.GuiGame" failonerror="true" fork="yes">
             <classpath refid="JMines.classpath"/>
         </java>
