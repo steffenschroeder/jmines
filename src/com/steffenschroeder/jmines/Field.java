@@ -32,7 +32,9 @@ public abstract class Field {
         return isOpended;
     }
 
+    
     public void setNeighborhood(List<Field> neigbors) {
+        	
     	this.neighbors = neigbors;
     	countMinesInNeighborhood();
     }
@@ -48,7 +50,12 @@ public abstract class Field {
     /**
      * the field was opened by the user
      */
-    public void open() {
+    public static int opencounter = 0;
+	public void open() {
+    	System.out.println("opencounter" + ++opencounter);
+		if(isOpended){
+			System.out.println("opening open field");
+		}
     	isOpended = true;
     }
 

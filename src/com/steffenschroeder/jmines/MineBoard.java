@@ -19,7 +19,7 @@ public class MineBoard implements Iterable<Field>{
     public int getColumns() {
         return mines[0].length;
     }
-
+    
     public Field getField(int row, int column) {
         return mines[row][column];
     }
@@ -58,7 +58,7 @@ public class MineBoard implements Iterable<Field>{
     }
 
     public void updateAllNeighbors() {
-        for (int currentRow = 0; currentRow < getRows(); currentRow++) {
+    	for (int currentRow = 0; currentRow < getRows(); currentRow++) {
             for (int currentColumn = 0; currentColumn < getColumns(); currentColumn++) {
                 updateNeigbors(currentRow, currentColumn);
             }
@@ -66,7 +66,7 @@ public class MineBoard implements Iterable<Field>{
     }
 
     private void updateNeigbors(final int row, final int column) {
-        List<Field> fieldsAround = new LinkedList<Field>();
+    	List<Field> fieldsAround = new LinkedList<Field>();
         for (int currentRow = row - 1; //row above current 
         	     currentRow <= row + 1; //row below current
         	     currentRow++) {

@@ -45,7 +45,7 @@ public class MineBoardTest {
 		board.setField(new MineField(), 2, 2);
 		board.setField(new NoMineField(), 2, 3);
 	}
-
+/*
 	@Test
 	public void testDimensions() {
 		assertEquals(3, board.getRows());
@@ -129,13 +129,17 @@ public class MineBoardTest {
 		}
 		assertEquals(board.getNumberOfMines(), count);
 	}
-	
+*/	
 	@Test
 	public void StackOverFlow(){
-		MineBoard board = (new MineBoardBuilder()).createCustomBoard(100, 100, 0).getBoard();
-		int dimension = 2;
-		board.setField(new MineField(), dimension, dimension);
-		board.updateAllNeighbors();
+		int dimension = 80;
+		int xdim = (int)((double)dimension*1d);
+		int ydim = (int)((double)dimension*1d);
+		MineBoardBuilder createCustomBoard = (new MineBoardBuilder()).createCustomBoard(xdim, ydim, 0);
+		createCustomBoard.addMine(xdim-1, ydim-1);
+		MineBoard board = createCustomBoard.getBoard();
+
+
 		assertThat(board.getNumberOfMines(), is(1));
 		board.getField(0, 0).open();
 	}

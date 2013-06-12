@@ -17,10 +17,15 @@ public class NoMineField extends Field {
       	               	neighbor.open();
                 }
             }
+        }else{
+        	System.out.println("Mines around");
         }
     }
 
 	private boolean noMinesAround() {
-		return getNumerOfMinesAround() == 0;
+		int numerOfMinesAround = getNumerOfMinesAround();
+		if(numerOfMinesAround>0)
+			System.out.println("Mines around:" + numerOfMinesAround);
+		return numerOfMinesAround == 0;
 	}
 }
