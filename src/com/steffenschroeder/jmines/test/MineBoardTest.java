@@ -2,6 +2,8 @@ package com.steffenschroeder.jmines.test;
 
 import static junit.framework.Assert.assertEquals;
 
+import static org.hamcrest.core.Is.*;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -110,6 +112,8 @@ public class MineBoardTest {
 			count++;
 		}
 		assertEquals(12, count);
+		
+		
 
 	}
 	
@@ -128,7 +132,11 @@ public class MineBoardTest {
 	
 	@Test
 	public void StackOverFlow(){
-		MineBoard board = (new MineBoardBuilder()).createCustomBoard(100, 100, 10).getBoard();
+		MineBoard board = (new MineBoardBuilder()).createCustomBoard(100, 100, 0).getBoard();
+		int dimension = 2;
+		board.setField(new MineField(), dimension, dimension);
+		board.updateAllNeighbors();
+		assertThat(board.getNumberOfMines(), is(1));
 		board.getField(0, 0).open();
 	}
 
