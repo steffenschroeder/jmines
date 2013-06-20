@@ -21,7 +21,11 @@ public abstract class Field {
 
 	
 
-    public int getNumerOfMinesAround() {
+    public List<Field> getNeighbors() {
+		return neighbors;
+	}
+
+	public int getNumerOfMinesAround() {
         return minesAround;
     }
 
@@ -34,7 +38,6 @@ public abstract class Field {
 
     
     public void setNeighborhood(List<Field> neigbors) {
-        	
     	this.neighbors = neigbors;
     	countMinesInNeighborhood();
     }
@@ -50,14 +53,13 @@ public abstract class Field {
     /**
      * the field was opened by the user
      */
-    public static int opencounter = 0;
 	public void open() {
-    	System.out.println("opencounter" + ++opencounter);
-		if(isOpended){
-			System.out.println("opening open field");
-		}
     	isOpended = true;
     }
+	
+	public void openNonRecurse(){
+		isOpended = true;
+	}
 
 	public boolean isFlagged() {
 		return flagged;

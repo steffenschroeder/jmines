@@ -1,8 +1,12 @@
 package com.steffenschroeder.jmines;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 public class NoMineField extends Field {
 
-	static int level = 0;
+ 
+	
     @Override
     public boolean isMine() {
         return false;
@@ -11,21 +15,31 @@ public class NoMineField extends Field {
     @Override
     public void open() {
     	super.open();
-        if (noMinesAround()) {
-            for (Field neighbor : neighbors) {
-                if (!neighbor.isOpen() && !neighbor.isFlagged()) {
-      	               	neighbor.open();
-                }
-            }
-        }else{
-        	System.out.println("Mines around");
-        }
+        openMines();
     }
 
-	private boolean noMinesAround() {
-		int numerOfMinesAround = getNumerOfMinesAround();
-		if(numerOfMinesAround>0)
-			System.out.println("Mines around:" + numerOfMinesAround);
-		return numerOfMinesAround == 0;
+	private void openMines() {
+		Deque<Field> minesToOpen = new LinkedList<Field>();
+
+		minesToOpen.push(this);
+		while(!minesToOpen.isEmpty()){
+			Field currentFieldToOpen = minesToOpen.pop();
+			currentFieldToOpen.openNonRecurse();
+			if(currentFieldToOpen.getNumerOfMinesAround()==0){
+		            putNonOpenNeighborsToTheQueue(minesToOpen, currentFieldToOpen);
+		        }
+			}
+		}
+
+	private void putNonOpenNeighborsToTheQueue(Deque<Field> minesToOpen,
+			Field currentFieldToOpen) {
+		for (Field neighbor : currentFieldToOpen.getNeighbors()) {
+		    if (!neighbor.isOpen() && !neighbor.isFlagged()) {
+		         if(!minesToOpen.contains(neighbor)){
+		        	minesToOpen.push(neighbor);
+		         }
+		    	 
+		    }
+		}
 	}
 }
