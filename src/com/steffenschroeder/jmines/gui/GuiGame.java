@@ -62,15 +62,15 @@ public class GuiGame implements GamestateObserver {
 	private int pressedRow;
 	private int pressedColumn;
 
-	private Icon exploded;
-	private Icon cool;
-	private Icon sad;
-	private Icon mine;
-	private Icon win;
-	private Icon flag;
-	private Icon badFlag;
-	private Icon smile;
-	private Icon worried;
+	private static Icon explodedMine;
+	private static Icon cool;
+	private static Icon sad;
+	private static Icon untouchedMine;
+	private static Icon win;
+	private static Icon flag;
+	private static Icon flaggedMine;
+	private static Icon smile;
+	private static Icon worried;
 
 	// private Grid grid;
 	private int width  = 9;
@@ -81,18 +81,17 @@ public class GuiGame implements GamestateObserver {
 	private MineGame game;
 
 	public GuiGame() {
-		preLoadIcons();
 		this.reset();
 	}
 
-	private void preLoadIcons() {
-		ClassLoader cl = this.getClass().getClassLoader();
-		exploded = new ImageIcon(cl.getResource("img/bang.png"));
+	static {
+		ClassLoader cl = GuiGame.class.getClassLoader();
+		explodedMine = new ImageIcon(cl.getResource("img/bang.png"));
 		cool = new ImageIcon(cl.getResource("img/face-cool.png"));
 		sad = new ImageIcon(cl.getResource("img/face-sad.png"));
-		mine = new ImageIcon(cl.getResource("img/mine.png"));
+		untouchedMine = new ImageIcon(cl.getResource("img/mine.png"));
 		win = new ImageIcon(cl.getResource("img/face-win.png"));
-		badFlag = new ImageIcon(cl.getResource("img/warning.png"));
+		flaggedMine = new ImageIcon(cl.getResource("img/warning.png"));
 		flag = new ImageIcon(cl.getResource("img/flag.png"));
 		worried = new ImageIcon(cl.getResource("img/face-worried.png"));
 		smile = new ImageIcon(cl.getResource("img/face-smile.png"));
@@ -180,13 +179,13 @@ public class GuiGame implements GamestateObserver {
 	
 
 	private JPanel createBoard() {
-		this.buttons = new JButton[this.height][this.width];
+		this.buttons = new JButtonWithSameIconForEnabledAndDisabled[this.height][this.width];
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(this.height, this.width));
 
 		for (int i = 0; i < this.height; i++) {
 			for (int j = 0; j < this.width; j++) {
-				this.buttons[i][j] = new JButton();
+				this.buttons[i][j] = new JButtonWithSameIconForEnabledAndDisabled();
 				panel.add(this.buttons[i][j]);
 
 				this.buttons[i][j].addMouseListener(new ButtonManager(i, j));
@@ -279,54 +278,60 @@ public class GuiGame implements GamestateObserver {
 	@Override
 	public void notifyGameLost() {
 		this.face.setIcon(sad);
+		//exchangeIconOfMissplaced
 	}
 
 	@Override
 	public void nofifyBoardChanged() {
+		drawBoard();
+
+	}
+
+	private void drawBoard() {
 		for (int row = 0; row < board.getRows(); row++) {
 			for (int column = 0; column < board.getColumns(); column++) {
-				Field f = board.getField(row, column);
-				JButton b = buttons[row][column];
-				if (f.isOpen()) {
-					if(f.isMine())
+				Field currentField = board.getField(row, column);
+				JButton currentButton = buttons[row][column];
+				if (currentField.isOpen()) {
+					if(currentField.isMine())
 					{
-						Icon i;
-						if (pressedRow == row && pressedColumn == column) {
-							i = exploded;
-						} else if(f.isFlagged()){
-							i = badFlag;
+						Icon iconToSet;
+						if (isPressed(row, column)) {
+							iconToSet = explodedMine;
+						} else if(currentField.isFlagged()){
+							iconToSet = flaggedMine;
 						} else {
-							i = mine;
+							iconToSet = untouchedMine;
 						}
-						b.setIcon(i);
-						b.setDisabledIcon(i);
+						currentButton.setIcon(iconToSet);
 					}
 					else
 					{
-						if (f.getNumerOfMinesAround() == 0) {
-							b.setText("");
+						if (currentField.getNumerOfMinesAround() == 0) {
+							currentButton.setText("");
 						} else {
-							b.setForeground(Color.RED);
-							b.setText(f.getNumerOfMinesAround() + "");
+							currentButton.setForeground(Color.RED);
+							currentButton.setText(currentField.getNumerOfMinesAround() + "");
 						}
 					}
 
-					b.setEnabled(false);
+					currentButton.setEnabled(false);
 				}
 				else
 				{
-					Icon i = null;
-					if (f.isFlagged())
+					Icon iconToSet = null;
+					if (currentField.isFlagged())
 					{
-						i = flag;
+						iconToSet = flag;
 					}
-					b.setIcon(i);
-					b.setDisabledIcon(i);
-					
+					currentButton.setIcon(iconToSet);
 				}
 			}
 
 		}
+	}
 
+	private boolean isPressed(int row, int column) {
+		return pressedRow == row && pressedColumn == column;
 	}
 }
