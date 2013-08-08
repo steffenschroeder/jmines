@@ -54,10 +54,10 @@ public abstract class Field {
      * the field was opened by the user
      */
 	public void open() {
-    	isOpended = true;
+    	openNonRecurse();
     }
 	
-	public void openNonRecurse(){
+	public final void openNonRecurse(){
 		isOpended = true;
 	}
 

@@ -2,12 +2,15 @@ package com.steffenschroeder.jmines;
 
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.List;
 
 public class NoMineField extends Field {
 
  
 	
-    @Override
+    private Deque<Field> minesToOpen;
+
+	@Override
     public boolean isMine() {
         return false;
     }
@@ -19,21 +22,20 @@ public class NoMineField extends Field {
     }
 
 	private void openMines() {
-		Deque<Field> minesToOpen = new LinkedList<Field>();
+		minesToOpen = new LinkedList<Field>();
 
 		minesToOpen.push(this);
 		while(!minesToOpen.isEmpty()){
 			Field currentFieldToOpen = minesToOpen.pop();
 			currentFieldToOpen.openNonRecurse();
 			if(currentFieldToOpen.getNumerOfMinesAround()==0){
-		            putNonOpenNeighborsToTheQueue(minesToOpen, currentFieldToOpen);
+		            putNonOpenNeighborsToTheQueue(currentFieldToOpen.getNeighbors());
 		        }
 			}
 		}
 
-	private void putNonOpenNeighborsToTheQueue(Deque<Field> minesToOpen,
-			Field currentFieldToOpen) {
-		for (Field neighbor : currentFieldToOpen.getNeighbors()) {
+	private void putNonOpenNeighborsToTheQueue(List<Field> neigbors) {
+		for (Field neighbor : neigbors) {
 		    if (!neighbor.isOpen() && !neighbor.isFlagged()) {
 		         if(!minesToOpen.contains(neighbor)){
 		        	minesToOpen.push(neighbor);
