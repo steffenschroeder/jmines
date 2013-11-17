@@ -1,20 +1,31 @@
 package com.steffenschroeder.jmines.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.steffenschroeder.jmines.GamestateObserver;
 import com.steffenschroeder.jmines.MineBoard;
 import com.steffenschroeder.jmines.MineBoardBuilder;
 import com.steffenschroeder.jmines.MineGame;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MindGameTest {
 
 	private MineGame game;
-	private GameSpy gameListinerSpy;
+	
 	private MineBoard gameBoard;
+	
+	@Mock
+	private GamestateObserver gameStateSpy;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -26,24 +37,23 @@ public class MindGameTest {
 		gameBoard = builder.getBoard();
 
 		game = new MineGame(gameBoard);
-		gameListinerSpy = new GameSpy();
-		game.addGameListiner(gameListinerSpy);
+
+		gameStateSpy = mock(GamestateObserver.class);
+		game.addGameListiner(gameStateSpy);
 	}
 	
 	@Test
 	 public void testChanged()
 	 {
-		gameListinerSpy.exptectchanged = 1; 
 		game.open(2,0);
-		gameListinerSpy.verify();
+		verify(gameStateSpy).nofifyBoardChanged();
 	 }
 	
 	@Test
 	 public void testChangedOnFlag()
 	 {
-		gameListinerSpy.exptectchanged = 1; 
 		game.toggleFlag(2,0);
-		gameListinerSpy.verify();
+		verify(gameStateSpy).nofifyBoardChanged();
 	 }
 	
 	
@@ -52,21 +62,20 @@ public class MindGameTest {
 	 {
 
 		game.open(2,0);
-		gameListinerSpy = new GameSpy();
-		game.addGameListiner(gameListinerSpy);
+		reset(gameStateSpy); //forget the call on notifyChanged()
 		game.open(2,0);
 		// an open field shall not be touched again
-		gameListinerSpy.exptectchanged = 0;
-		gameListinerSpy.verify();
+		verify(gameStateSpy,never()).nofifyBoardChanged();
 	 }
 	
 	@Test
 	 public void testLost()
 	 {
-		gameListinerSpy.exptectchanged = 1;
-		gameListinerSpy.exptectlost    = true;
 		game.open(1,0);
-		gameListinerSpy.verify();
+
+		verify(gameStateSpy).nofifyBoardChanged();
+		verify(gameStateSpy).notifyGameLost();
+		verify(gameStateSpy,never()).nofifyGameWon();
 	 }
 	
 	@Test
@@ -81,50 +90,9 @@ public class MindGameTest {
 			
 		}
 
-
-		gameListinerSpy.exptectchanged = 13;
-		gameListinerSpy.exptectwon     = true;
-		gameListinerSpy.verify();
+		verify(gameStateSpy, times(13)).nofifyBoardChanged();
+		verify(gameStateSpy).nofifyGameWon();
 	 }
-	
-	
-
-	
-
-	private class GameSpy implements GamestateObserver
-	{
-		public boolean exptectwon;
-		public boolean exptectlost;
-		public int exptectchanged;
-		
-		public boolean actualwon;
-		public boolean actuallost;
-		public int actualchanged;
-
-		
-		@Override
-		public void nofifyBoardChanged() {
-			actualchanged++;
-		}
-
-		@Override
-		public void nofifyGameWon() {
-			actualwon = true;
-			
-		}
-
-		@Override
-		public void notifyGameLost() {
-			actuallost = true;
-		}
-		
-		public void verify()
-		{
-			assertEquals(exptectlost, actuallost);
-			assertEquals(exptectwon, actualwon);
-			assertEquals(exptectchanged, actualchanged);
-		}
-	}
 }
 
 
