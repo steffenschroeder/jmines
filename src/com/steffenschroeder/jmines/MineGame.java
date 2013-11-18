@@ -5,8 +5,8 @@ import java.util.List;
 
 public class MineGame {
 
-	private MineBoard board;
-	private List<GamestateObserver> gameListiner = new ArrayList<GamestateObserver>();
+	private final MineBoard board;
+	private final List<GamestateObserver> gameListiner = new ArrayList<GamestateObserver>();
 
 	public MineGame(MineBoard gameBoard) {
 		board = gameBoard;

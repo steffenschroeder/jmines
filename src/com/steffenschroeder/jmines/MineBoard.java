@@ -45,7 +45,7 @@ public class MineBoard implements Iterable<Field>{
 
     @Override
     public String toString() {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int row = 0; row < getRows(); row++) {
 
             for (int col = 0; col < getColumns(); col++) {

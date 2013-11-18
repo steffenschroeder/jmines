@@ -41,6 +41,12 @@ public class MineBoardBuilderTest {
         testCreationByNumbers(9,8,10);
     }
 
+    @Test
+    public void fluentInterface() {
+        MineBoard board = builder.createCustomBoard(10, 10, 0).addMine(1,1).addMine(1,2).getBoard();
+        board.getNumberOfMines();
+    }
+
 	private void testCreationByNumbers(int rows, int cols, int mines) {
 		builder.createCustomBoard(rows, cols, mines);
         MineBoard board = builder.getBoard();

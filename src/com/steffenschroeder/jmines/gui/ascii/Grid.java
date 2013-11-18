@@ -348,7 +348,7 @@ class Grid implements Consts
 		
 		if (this.hasFlag(row, col))
 		{
-			throw new SquareHasFlag("Square has a flag, cannot reveal");
+			throw new SquareHasFlag();
 		}
 		
 		if (this.isRevealed(row, col))
@@ -368,8 +368,8 @@ class Grid implements Consts
 				try //top
 				{
 					this.reveal(row+getTopOffset(direction), col+getLeftTofset(direction));
-				} catch (SquareDoesNotExist e) {}
-				  catch (SquareAlreadyRevealed e) {}
+				} catch (SquareDoesNotExist ignored) {}
+				  catch (SquareAlreadyRevealed ignored) {}
 				
 			}
 		}
@@ -533,7 +533,7 @@ class Grid implements Consts
 	}
 
 	private String printGrid(boolean solution){
-		String s = new String();
+		String s = "";
 		
 		s = topLetters(s);
 		s = topborder(s);

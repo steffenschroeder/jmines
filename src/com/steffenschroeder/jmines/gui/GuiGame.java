@@ -55,9 +55,7 @@ public class GuiGame implements GamestateObserver {
 
 	private JButton face;
 
-	private JPanel boardPanel;
-
-	private JButton[][] buttons;
+    private JButton[][] buttons;
 	
 	private int pressedRow;
 	private int pressedColumn;
@@ -109,20 +107,20 @@ public class GuiGame implements GamestateObserver {
 
 	private void createWindow() {
 		
-		board = new MineBoardBuilder().createCustomBoard(height, width, mines).getBoard();;
-		game = new MineGame(board);
+		board = new MineBoardBuilder().createCustomBoard(height, width, mines).getBoard();
+        game = new MineGame(board);
 		game.addGameListiner(this);
 
 
 		face = new JButton(smile);
 		face.addActionListener(new FaceManager());
 
-		boardPanel = this.createBoard();
+        JPanel boardPanel = this.createBoard();
 
 		JMenuBar menuBar = buildMenu();
 		window.setJMenuBar(menuBar);
 		window.add(this.face, BorderLayout.NORTH);
-		window.add(this.boardPanel, BorderLayout.CENTER);
+		window.add(boardPanel, BorderLayout.CENTER);
 
 		int pxwidth = this.width * 40;
 		int pxheight = this.height * 40 + 50;
@@ -257,10 +255,10 @@ public class GuiGame implements GamestateObserver {
 		try {
 			// Set System L&F
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (UnsupportedLookAndFeelException e) {
-		} catch (ClassNotFoundException e) {
-		} catch (InstantiationException e) {
-		} catch (IllegalAccessException e) {
+		} catch (UnsupportedLookAndFeelException ignored) {
+		} catch (ClassNotFoundException ignored) {
+		} catch (InstantiationException ignored) {
+		} catch (IllegalAccessException ignored) {
 		}
 
 		new GuiGame();

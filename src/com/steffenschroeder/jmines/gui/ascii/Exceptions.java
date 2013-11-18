@@ -111,9 +111,9 @@ class SquareHasFlag extends Exception
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public SquareHasFlag(String s)
+	public SquareHasFlag()
 	{
-		super(s);
+		super("Square has a flag, cannot reveal");
 	}
 }
 

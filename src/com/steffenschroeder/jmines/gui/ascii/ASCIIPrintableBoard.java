@@ -94,7 +94,7 @@ public class ASCIIPrintableBoard extends MineBoard {
 	}
 
 	private String printGrid(boolean solution){
-		String s = new String();
+		String s = "";
 		
 		s = topLetters(s);
 		s = topborder(s);

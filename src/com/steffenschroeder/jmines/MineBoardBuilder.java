@@ -61,12 +61,11 @@ public class MineBoardBuilder {
 			int pos = rand.nextInt(seed);
 			int row = pos / boardToCreate.getColumns();
 			int col = pos - (row * boardToCreate.getColumns());
-			if (boardToCreate.getField(row, col).isMine()) {
-				continue;
-			} else {
+			if (!boardToCreate.getField(row, col).isMine()) {
 				addMine(row, col);
 				minesToAdd--;
-			}
-		}
+            }
+        }
+
 	}
 }

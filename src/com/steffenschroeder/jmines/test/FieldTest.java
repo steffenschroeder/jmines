@@ -116,9 +116,9 @@ public class FieldTest {
         neighbors.add(mine);
         neighbors.add(nonMine);
 
-        mineField.setNeighborhood(neighbors);
-        mineField.open();
-        assertTrue(mineField.isOpen());
+        field.setNeighborhood(neighbors);
+        field.open();
+        assertTrue(field.isOpen());
         
         assertFalse(mine.isOpen());
         assertFalse(nonMine.isOpen());
