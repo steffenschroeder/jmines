@@ -84,15 +84,15 @@ public class GuiGame implements GamestateObserver {
 
 	static {
 		ClassLoader cl = GuiGame.class.getClassLoader();
-		explodedMine = new ImageIcon(cl.getResource("img/bang.png"));
-		cool = new ImageIcon(cl.getResource("img/face-cool.png"));
-		sad = new ImageIcon(cl.getResource("img/face-sad.png"));
-		untouchedMine = new ImageIcon(cl.getResource("img/mine.png"));
-		win = new ImageIcon(cl.getResource("img/face-win.png"));
-		flaggedMine = new ImageIcon(cl.getResource("img/warning.png"));
-		flag = new ImageIcon(cl.getResource("img/flag.png"));
-		worried = new ImageIcon(cl.getResource("img/face-worried.png"));
-		smile = new ImageIcon(cl.getResource("img/face-smile.png"));
+		explodedMine = new ImageIcon(cl.getResource("bang.png"));
+		cool = new ImageIcon(cl.getResource("face-cool.png"));
+		sad = new ImageIcon(cl.getResource("face-sad.png"));
+		untouchedMine = new ImageIcon(cl.getResource("mine.png"));
+		win = new ImageIcon(cl.getResource("face-win.png"));
+		flaggedMine = new ImageIcon(cl.getResource("warning.png"));
+		flag = new ImageIcon(cl.getResource("flag.png"));
+		worried = new ImageIcon(cl.getResource("face-worried.png"));
+		smile = new ImageIcon(cl.getResource("face-smile.png"));
 	}
 
 	private void reset() {

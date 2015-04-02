@@ -1,1 +1,3 @@
 /junit
+.gradle/
+.build.gradle.swp
