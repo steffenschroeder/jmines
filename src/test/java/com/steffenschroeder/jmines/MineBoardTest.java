@@ -1,4 +1,4 @@
-package com.steffenschroeder.jmines.test;
+package com.steffenschroeder.jmines;
 
 import static junit.framework.Assert.assertEquals;
 

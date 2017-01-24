@@ -1,4 +1,4 @@
-package com.steffenschroeder.jmines.test;
+package com.steffenschroeder.jmines;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
