@@ -132,6 +132,7 @@ public class AsciiGame implements Consts, GamestateObserver
 					break;				
 			}
 		}
+		s.close();
 	}
 	
 	
@@ -218,13 +219,14 @@ public class AsciiGame implements Consts, GamestateObserver
 			
 			case 'q':
 				this.done = true;
+				s.close();
 				return;
 			
 			default:
 				System.out.println("Incorrect choice, try again");
 				break;
 			}
-			
+		s.close();	
 		}
 	}
 	
@@ -277,15 +279,18 @@ public class AsciiGame implements Consts, GamestateObserver
 			{
 				case 'y':
 					this.newGame();
+					s.close();
 					return;
 				case 'n':
 					this.done = true;
+					s.close();
 					return;
 				default:
 					System.out.print("Incorrect choice, try again: ");
 					break;
 			}
 		}
+		
 		
 	}
 

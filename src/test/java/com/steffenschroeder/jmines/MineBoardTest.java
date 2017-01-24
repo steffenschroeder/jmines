@@ -1,6 +1,6 @@
 package com.steffenschroeder.jmines;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,6 @@ import com.steffenschroeder.jmines.NoMineField;
 public class MineBoardTest {
 
 	private MineBoard board;
-
 	private void allequals(final boolean[][] expected) {
 
 		for (int ii = 0; ii < expected.length; ii++) {
