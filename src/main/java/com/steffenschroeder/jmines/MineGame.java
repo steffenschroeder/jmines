@@ -2,6 +2,7 @@ package com.steffenschroeder.jmines;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class MineGame {
 
@@ -38,48 +39,33 @@ public class MineGame {
 	}
 
 	private void openAllFields() {
-		for (Field field : board) {
-			field.open();
-		}
-
+		board.forEach(Field::open);
 	}
 
 	private void notifyBoardChanged() {
-		for (GamestateObserver listener : gameListiner) {
-			listener.nofifyBoardChanged();
-		}
+		notifyListener(GamestateObserver::nofifyBoardChanged);
 	}
 
 	private void nofifyGameLost() {
-		for (GamestateObserver listener : gameListiner) {
-			listener.notifyGameLost();
-		}
+		notifyListener(GamestateObserver::notifyGameLost);
 	}
 
 	private void notifyGameWon() {
-		for (GamestateObserver listener : gameListiner) {
-			listener.nofifyGameWon();
-		}
+		notifyListener(GamestateObserver::nofifyGameWon);
+	}
+	
+	private void notifyListener(Consumer<GamestateObserver> action){
+		gameListiner.forEach(action);
 	}
 
 	private boolean gameWon() {
 			
-		int nonMineFieldsOnBoard = board.getRows() * board.getColumns()
+		long nonMineFieldsOnBoard = board.getRows() * board.getColumns()
 				- board.getNumberOfMines();
 		return getNumbeOfOpenedNonMineFields() == nonMineFieldsOnBoard;
 	}
 
-	private int getNumbeOfOpenedNonMineFields() {
-		int openendNoneMineFields = 0;
-		for (Field field : board) {
-			if (isOpenNonMineField(field)) {
-				openendNoneMineFields++;
-			}
-		}
-		return openendNoneMineFields;
-	}
-
-	private boolean isOpenNonMineField(Field currentField) {
-		return !currentField.isMine() && currentField.isOpen();
+	private long getNumbeOfOpenedNonMineFields() {
+		return board.stream().filter(Field::isOpenNonMineField).count();
 	}
 }

@@ -3,6 +3,8 @@ package com.steffenschroeder.jmines;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 public class MineBoard implements Iterable<Field>{
     protected Field[][] mines;
@@ -24,15 +26,8 @@ public class MineBoard implements Iterable<Field>{
         return mines[row][column];
     }
 
-    public int getNumberOfMines() {
-        int numberOfMines = 0;
-        for (int row = 0; row < getRows(); row++) {
-
-            for (int col = 0; col < getColumns(); col++) {
-                numberOfMines += getField(row, col).isMine() ? 1 : 0;
-            }
-        }
-        return numberOfMines;
+    public long getNumberOfMines() {
+        return this.stream().filter(Field::isMine).count();
     }
 
     public int getRows() {
@@ -88,6 +83,11 @@ public class MineBoard implements Iterable<Field>{
 	@Override
 	public Iterator<Field> iterator() {
 		return new TwoDimensionArrayIterator<Field>(mines);
+	}
+	
+	public Stream<Field> stream(){
+		return StreamSupport.stream(this.spliterator(), false);
+		
 	}
 	
 }

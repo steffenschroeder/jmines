@@ -104,24 +104,12 @@ public class MineBoardTest {
 
 	@Test
 	public void testIteratorNumber() {
-		int count = 0;
-		for (@SuppressWarnings("unused") Field field : board) {
-			count++;
-		}
-		assertEquals(12, count);
-
+		assertEquals(12, board.stream().count());
 	}
 	
 	@Test
 	public void testIteratorContent() {
-		int count = 0;
-		for (Field field : board) {
-			if(field.isMine())
-			{
-				count++;
-			}
-			
-		}
+		long count = board.stream().filter(Field::isMine).count();
 		assertEquals(board.getNumberOfMines(), count);
 	}
 	
