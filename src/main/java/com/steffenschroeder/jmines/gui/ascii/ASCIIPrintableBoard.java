@@ -173,7 +173,7 @@ public class ASCIIPrintableBoard extends MineBoard {
 		if(f.isMine()){
 			return MINE;
 		}
-		int numberOfMines = f.getNumerOfMinesAround();
+		long numberOfMines = f.getNumerOfMinesAround();
 		if(0==numberOfMines){
 			return NONE;
 			
