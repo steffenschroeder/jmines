@@ -1,3 +1,5 @@
 /junit
 .gradle/
 .build.gradle.swp
+.settings
+bin
