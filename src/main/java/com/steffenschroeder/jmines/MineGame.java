@@ -2,6 +2,7 @@ package com.steffenschroeder.jmines;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 public class MineGame {
 
@@ -69,14 +70,10 @@ public class MineGame {
 		return getNumbeOfOpenedNonMineFields() == nonMineFieldsOnBoard;
 	}
 
-	private int getNumbeOfOpenedNonMineFields() {
-		int openendNoneMineFields = 0;
-		for (Field field : board) {
-			if (isOpenNonMineField(field)) {
-				openendNoneMineFields++;
-			}
-		}
-		return openendNoneMineFields;
+	private long getNumbeOfOpenedNonMineFields() {
+		return StreamSupport.stream(board.spliterator(), true)
+					.filter(f -> isOpenNonMineField(f))
+					.count();
 	}
 
 	private boolean isOpenNonMineField(Field currentField) {

@@ -11,7 +11,7 @@ import java.util.List;
  */
 public abstract class Field {
 	
-	private int minesAround = 0;
+	private long minesAround = 0;
     
 	private boolean isOpended = false;
 
@@ -25,7 +25,7 @@ public abstract class Field {
 		return neighbors;
 	}
 
-	public int getNumerOfMinesAround() {
+	public long getNumerOfMinesAround() {
         return minesAround;
     }
 
@@ -44,10 +44,7 @@ public abstract class Field {
 
 
 	private void countMinesInNeighborhood() {
-		minesAround = 0;
-    	for (Field field : this.neighbors) {
-    		minesAround += (field.isMine()? 1 : 0 );
-		}
+		minesAround = this.neighbors.parallelStream().filter(Field::isMine).count();
 	}
 
     /**
@@ -67,5 +64,10 @@ public abstract class Field {
 
 	public void toggleFlag() {
 		flagged = !flagged;
+	}
+
+	@Override
+	public String toString() {
+		return "Field [isOpended=" + isOpended + ", flagged=" + flagged + ", isMine()=" + isMine() + "]";
 	}
 }
